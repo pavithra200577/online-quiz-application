@@ -1,0 +1,318 @@
+export { defaultascalculateGrade } from'./calculateGrade';
+export { defaultascalculateScore } from'./calculateScore';
+export { defaultasgetLetter } from'./getLetter';
+export { defaultasshuffle } from'./shuffle';
+export { defaultastimeConverter } from'./timeConverter';
+
+
+import {
+  timeConverter,
+  calculateGrade,
+  getLetter,
+  calculateScore,
+} from'../utils';
+
+describe('timeConverter', () => {
+  it('returns hours, minutes and seconds on valid input', () => {
+    expect(timeConverter(1000*60)).toMatchObject({
+      hours:'00',
+      minutes:'01',
+      seconds:'00',
+    });
+  });
+
+  it('returns null on invalid input', () => {
+    expect(timeConverter('ss')).toBeNull();
+  });
+});
+
+describe('calculateGrade', () => {
+  it('returns A+ and you pass for any grade >= 97 on valid input', () => {
+    expect(calculateGrade(97)).toMatchObject({
+      grade:'A+',
+      remarks:`Outstanding! You've mastered this quiz. Well done!`,
+    });
+  });
+
+  it('returns A and you pass for any grade >= 93 <= 96 on valid input', () => {
+    expect(calculateGrade(96)).toMatchObject({
+      grade:'A',
+      remarks:`Outstanding! You've mastered this quiz. Well done!`,
+    });
+    expect(calculateGrade(93)).toMatchObject({
+      grade:'A',
+      remarks:`Outstanding! You've mastered this quiz. Well done!`,
+    });
+  });
+
+  it('returns A- and you pass for any grade >= 90 <= 92 on valid input', () => {
+    expect(calculateGrade(90)).toMatchObject({
+      grade:'A-',
+      remarks:`Outstanding! You've mastered this quiz. Well done!`,
+    });
+    expect(calculateGrade(92)).toMatchObject({
+      grade:'A-',
+      remarks:`Outstanding! You've mastered this quiz. Well done!`,
+    });
+  });
+
+  it('returns null on invalid input', () => {
+    expect(calculateGrade([1, 2])).toBeNull();
+  });
+});
+
+describe('getLetter', () => {
+  it('returns a letter based on valid input', () => {
+    expect(getLetter(0)).toEqual('A.');
+    expect(getLetter(1)).toEqual('B.');
+    expect(getLetter(2)).toEqual('C.');
+    expect(getLetter(3)).toEqual('D.');
+  });
+
+  it('returns null on invalid input', () => {
+    expect(getLetter(4)).toBeNull();
+  });
+});
+
+describe('calculateScore', () => {
+  it('returns score on valid input', () => {
+    expect(calculateScore(200, 100)).toEqual(50);
+  });
+
+  it('returns null on invalid input', () => {
+    expect(calculateScore(0, 0)).toEqual(0);
+  });
+});
+
+constcalculateGrade=score=> {
+  if (score===null||score===undefined||typeofscore!=='number') {
+    returnnull;
+  }
+
+  constpercentage=parseInt(score);
+
+  letgrade=null;
+  letremarks=null;
+
+  if (percentage>=97) {
+    grade='A+';
+  } elseif (percentage>=93&&percentage<=96) {
+    grade='A';
+  } elseif (percentage>=90&&percentage<=92) {
+    grade='A-';
+  } elseif (percentage>=87&&percentage<=89) {
+    grade='B+';
+  } elseif (percentage>=83&&percentage<=86) {
+    grade='B';
+  } elseif (percentage>=80&&percentage<=82) {
+    grade='B-';
+  } elseif (percentage>=77&&percentage<=79) {
+    grade='C+';
+  } elseif (percentage>=73&&percentage<=76) {
+    grade='C';
+  } elseif (percentage>=70&&percentage<=72) {
+    grade='C-';
+  } elseif (percentage>=67&&percentage<=69) {
+    grade='D+';
+  } elseif (percentage>=63&&percentage<=66) {
+    grade='D';
+  } elseif (percentage>=60&&percentage<=62) {
+    grade='D-';
+  } elseif (percentage<60) {
+    grade='F';
+  }
+
+  if (score>=90) {
+    remarks="Outstanding! You've mastered this quiz. Well done!";
+  } elseif (score>=80&&score<=89) {
+    remarks="Great job! You've excelled in this quiz.";
+  } elseif (score>=70&&score<=79) {
+    remarks="Good effort! You've passed the quiz.";
+  } elseif (score>=60&&score<=69) {
+    remarks="You've passed, but there's potential for improvement.";
+  } elseif (score<60) {
+    remarks="Learning is a journey. Keep going, and you'll get there.";
+  }
+
+  return {
+    grade,
+    remarks,
+  };
+};
+
+exportdefaultcalculateGrade;
+
+constcalculateScore= (totalQuestions, correctAnswers) => {
+  if (totalQuestions===0) {
+    return0;
+  }
+  returnNumber(((correctAnswers*100) /totalQuestions).toFixed(2));
+};
+
+exportdefaultcalculateScore;
+
+constgetLetter=number=> {
+  letletter;
+
+  switch (number) {
+    case0:
+      letter='A.';
+      break;
+    case1:
+      letter='B.';
+      break;
+    case2:
+      letter='C.';
+      break;
+    case3:
+      letter='D.';
+      break;
+    default:
+      letter=null;
+      break;
+  }
+
+  returnletter;
+};
+
+exportdefaultgetLetter;
+
+importSwalfrom'sweetalert2';
+
+constisLocalhost=Boolean(
+  window.location.hostname==='localhost'||
+    // [::1] is the IPv6 localhost address.
+    window.location.hostname==='[::1]'||
+    // 127.0.0.0/8 are considered localhost for IPv4.
+    window.location.hostname.match(
+      /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
+    )
+);
+
+exportfunctionregister(config) {
+  if (process.env.NODE_ENV==='production'&&'serviceWorker'innavigator) {
+    // The URL constructor is available in all browsers that support SW.
+    constpublicUrl=newURL(process.env.PUBLIC_URL, window.location.href);
+    if (publicUrl.origin!==window.location.origin) {
+      // Our service worker won't work if PUBLIC_URL is on a different origin
+      // from what our page is served on. This might happen if a CDN is used to
+      // serve assets; see https://github.com/facebook/create-react-app/issues/2374
+      return;
+    }
+
+    window.addEventListener('load', () => {
+      constswUrl=`${process.env.PUBLIC_URL}/service-worker.js`;
+
+      if (isLocalhost) {
+        // This is running on localhost. Let's check if a service worker still exists or not.
+        checkValidServiceWorker(swUrl, config);
+
+        // Add some additional logging to localhost, pointing developers to the
+        // service worker/PWA documentation.
+        navigator.serviceWorker.ready.then(() => {
+          console.log(
+            'This web app is being served cache-first by a service worker.'
+          );
+        });
+      } else {
+        // Is not localhost. Just register service worker
+        registerValidSW(swUrl, config);
+      }
+    });
+  }
+}
+
+functionregisterValidSW(swUrl, config) {
+  navigator.serviceWorker
+    .register(swUrl)
+    .then(registration=> {
+      registration.onupdatefound= () => {
+        constinstallingWorker=registration.installing;
+        if (installingWorker==null) {
+          return;
+        }
+        installingWorker.onstatechange= () => {
+          if (installingWorker.state==='installed') {
+            if (navigator.serviceWorker.controller) {
+              // At this point, the updated precached content has been fetched,
+              // but the previous service worker will still serve the older
+              // content until all client tabs are closed.
+              console.log(
+                'New content is available and will be used when all '+
+                  'tabs for this page are closed.'
+              );
+
+              // Execute callback
+              if (config&&config.onUpdate) {
+                config.onUpdate(registration);
+              }
+            } else {
+              // At this point, everything has been precached.
+              // It's the perfect time to display a
+              // "Content is cached for offline use." message.
+              console.log('Content is cached for offline use.');
+
+              Swal.fire({
+                toast:'true',
+                position:'bottom',
+                icon:'success',
+                title:'App is ready to work offline.',
+                showConfirmButton:false,
+                timer:6000
+              });
+
+              // Execute callback
+              if (config&&config.onSuccess) {
+                config.onSuccess(registration);
+              }
+            }
+          }
+        };
+      };
+    })
+    .catch(error=> {
+      console.error('Error during service worker registration:', error);
+    });
+}
+
+functioncheckValidServiceWorker(swUrl, config) {
+  // Check if the service worker can be found. If it can't reload the page.
+  fetch(swUrl, {
+    headers: { 'Service-Worker':'script' }
+  })
+    .then(response=> {
+      // Ensure service worker exists, and that we really are getting a JS file.
+      constcontentType=response.headers.get('content-type');
+      if (
+        response.status===404||
+        (contentType!=null&&contentType.indexOf('javascript') ===-1)
+      ) {
+        // No service worker found. Probably a different app. Reload the page.
+        navigator.serviceWorker.ready.then(registration=> {
+          registration.unregister().then(() => {
+            window.location.reload();
+          });
+        });
+      } else {
+        // Service worker found. Proceed as normal.
+        registerValidSW(swUrl, config);
+      }
+    })
+    .catch(() => {
+      console.log(
+        'No internet connection found. App is running in offline mode.'
+      );
+    });
+}
+
+exportfunctionunregister() {
+  if ('serviceWorker'innavigator) {
+    navigator.serviceWorker.ready
+      .then(registration=> {
+        registration.unregister();
+      })
+      .catch(error=> {
+        console.error(error.message);
+      });
+  }
+}
